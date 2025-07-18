@@ -1,5 +1,3 @@
-version: "3.8"
-
 name: 'wp'
 
 services:
@@ -16,15 +14,22 @@ services:
     networks:
       - inception-network
     restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
     image: wordpress
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     ports:
-      - '9000:9000'
+      - '7000:9000'
     env_file:
       - .env
     volumes:
@@ -51,6 +56,17 @@ services:
       - inception-network
     restart: always
 
+  uptime-kuma:
+    container_name: uptime
+    build: ./requirements/bonus/uptime
+    ports:
+      - "3001:3001"
+    volumes:
+      - uptime:/app/data
+    networks:
+      - inception-network
+    restart: unless-stopped
+
 networks:
   inception-network:
     name: inception-network
@@ -61,11 +77,17 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/jmouaike42/data/database
+      device: /home/edwin/42/42_inception/srcs/data/database
       o: bind
   website:
     driver: local
     driver_opts:
       type: none
-      device: /home/jmouaike42/data/website
+      device: /home/edwin/42/42_inception/srcs/data/website
+      o: bind
+  uptime:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/edwin/42/42_inception/srcs/data/uptime
       o: bind

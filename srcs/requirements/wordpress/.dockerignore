@@ -1,0 +1,10 @@
+# Fichiers à ignorer lors de la construction du Docker
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+*.md
+*.log
+.DS_Store
+Thumbs.db
