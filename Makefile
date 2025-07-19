@@ -28,7 +28,7 @@ build:
 	@echo "$(GREEN)Images construites avec succès!$(NC)"
 
 # Démarrer les conteneurs
-up: create-dirs
+up: 
 	@echo "$(YELLOW)Démarrage des conteneurs...$(NC)"
 	@docker-compose -f $(COMPOSE_FILE) up -d
 	@echo "$(GREEN)Conteneurs démarrés!$(NC)"
