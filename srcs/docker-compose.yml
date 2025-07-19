@@ -21,6 +21,17 @@ services:
       retries: 3
       start_period: 30s
 
+  redis:
+    container_name: redis
+    build:
+      context: requirements/bonus/redis
+      dockerfile: Dockerfile
+    volumes:
+      - website:/var/www/wordpress
+    networks:
+      - inception-network
+    restart: always
+
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
@@ -28,6 +39,8 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+      redis:
+        condition: service_started
     ports:
       - '7000:9000'
     env_file:
@@ -63,9 +76,32 @@ services:
       - "3001:3001"
     volumes:
       - uptime:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - inception-network
     restart: unless-stopped
+  
+  adminer:
+    container_name: adminer
+    build: ./requirements/bonus/adminer
+    ports:
+      - "3002:80"
+    env_file:
+      - .env
+    networks:
+      - inception-network
+    restart: always
+
+  portfolio:
+    container_name: portfolio
+    build: ./requirements/bonus/portfolio
+    ports:
+      - "3003:80"
+    env_file:
+      - .env
+    networks:
+      - inception-network
+    restart: always
 
 networks:
   inception-network:
