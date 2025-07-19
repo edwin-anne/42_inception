@@ -89,6 +89,36 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
     # Activer des plugins de base
     wp plugin install akismet --activate --allow-root
     
+    # Configuration de Redis
+    echo "Configuration de Redis pour WordPress..."
+    
+    # Installer le plugin Redis Object Cache
+    wp plugin install redis-cache --activate --allow-root
+    
+    # Configurer Redis dans wp-config.php
+    cat >> /var/www/html/wp-config.php << 'EOF'
+
+/* Configuration Redis */
+define('WP_REDIS_HOST', 'redis');
+define('WP_REDIS_PORT', 6379);
+define('WP_REDIS_TIMEOUT', 1);
+define('WP_REDIS_READ_TIMEOUT', 1);
+define('WP_REDIS_DATABASE', 0);
+EOF
+    
+    # Attendre que Redis soit disponible
+    echo "Attente de la disponibilité de Redis..."
+    while ! nc -z redis 6379 2>/dev/null; do
+        echo "Redis n'est pas encore prêt, attente..."
+        sleep 2
+    done
+    echo "Redis est disponible!"
+    
+    # Activer le cache Redis
+    wp redis enable --allow-root
+    
+    echo "Redis configuré avec succès!"
+    
     echo "WordPress installé avec succès!"
 else
     echo "WordPress déjà installé"
