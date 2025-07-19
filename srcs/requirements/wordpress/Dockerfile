@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     php7.4-json \
     php7.4-imagick \
     php7.4-opcache \
+    php7.4-redis \
     curl \
     wget \
     unzip \
@@ -31,11 +32,8 @@ COPY conf/php.ini /etc/php/7.4/fpm/php.ini
 # Copie du script d'initialisation
 COPY tools/init.sh /usr/local/bin/init.sh
 COPY tools/wp-config.php /usr/local/bin/wp-config.php
-COPY tools/test.sh /usr/local/bin/test.sh
-
 # Rendre les scripts exécutables
-RUN chmod +x /usr/local/bin/init.sh \
-    && chmod +x /usr/local/bin/test.sh
+RUN chmod +x /usr/local/bin/init.sh
 
 # Changement des permissions
 RUN chown -R www-data:www-data /var/www/html \

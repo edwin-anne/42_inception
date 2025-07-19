@@ -16,11 +16,9 @@ COPY conf/my.cnf /etc/mysql/conf.d/my.cnf
 
 # Copie du script d'initialisation
 COPY tools/init.sh /usr/local/bin/init.sh
-COPY tools/test.sh /usr/local/bin/test.sh
 
 # Rendre les scripts exécutables
-RUN chmod +x /usr/local/bin/init.sh \
-    && chmod +x /usr/local/bin/test.sh
+RUN chmod +x /usr/local/bin/init.sh
 
 # Changement des permissions pour mysql
 RUN chown -R mysql:mysql /var/lib/mysql \
